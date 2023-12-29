@@ -14,8 +14,7 @@ Como usarlo paso por paso
 Paso 0:
 -   Actualizaremos los paquetes del sistema
 
-           apt-get update
-           apt-get upgrade
+           apt-get update && apt-get upgrade
 
 Paso 1:
 -   Ahora debemos clonar el repositorio
