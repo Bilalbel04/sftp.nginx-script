@@ -16,6 +16,6 @@ Paso 1:
 
         apt-get install get
 Paso 2:
-    Ahora deberemos instalar el script
+ -   Ahora deberemos instalar el script
 
-        git clone 
+        git clone https://github.com/Bilalbel04/sftp.nginx-script.git
