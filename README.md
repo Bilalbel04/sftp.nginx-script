@@ -36,7 +36,7 @@ Paso 5:
 
         chmod 755 darkhostingscr.sh
 
-Paso 5:
+Paso 6:
 -   Ejecutamos el script 
 
         bash darkhostingscr.sh
