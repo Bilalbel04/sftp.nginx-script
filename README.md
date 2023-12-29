@@ -11,32 +11,28 @@ Este es un script echo en bash para un proyecto llamado DarkHosting. Automatiza 
 
 Como usarlo paso por paso
 
+Paso 0:
+-   Actualizaremos los paquetes del sistema
+
+           apt-get update
+           apt-get upgrade
+
 Paso 1:
--   Primero deberemos instalar el paquete git, en varias distribuciones de linux no viene incluido.
-
-        apt-get install get
-
-Paso 2:
 -   Ahora debemos clonar el repositorio
 
         git clone https://github.com/Bilalbel04/sftp.nginx-script.git
 
-Paso 3:
+Paso 2:
 -   Entramos a la carpeta sftp.nfinx-script 
 
         cd sftp.nginx-script
 
-Paso 4:
--   Descomprimimos master.zip
-  
-        unzip master.zip
-
-Paso 5:
+Paso 3:
 -   Damos permisos de ejecucion al script 
 
         chmod 755 darkhostingscr.sh
 
-Paso 6:
+Paso 4:
 -   Ejecutamos el script 
 
         bash darkhostingscr.sh
