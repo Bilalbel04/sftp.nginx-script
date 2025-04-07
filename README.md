@@ -15,8 +15,8 @@ Este script en **Bash** automatiza la instalación de **Nginx**, la creación de
 - **Permisos:** Debe ejecutarse como `root`
 
 ## 📜 Uso
-```bash
 ### 1️⃣ Actualizacion del sistema
+```bash
 sudo apt update -y && sudo apt upgrade -y
 ```
 
