@@ -1,199 +1,143 @@
 #!/bin/bash
 
-# Especificacion ruta de LOGS
-LOGS="/var/log/$user/$domain.log"
-LOGSERROR="/var/log/$user/$domain.error.log"
+# Definir colores ANSI
+RED='\e[31m'
+GREEN='\e[32m'
+YELLOW='\e[33m'
+BLUE='\e[34m'
+MAGENTA='\e[35m'
+CYAN='\e[36m'
+BOLD='\e[1m'
+RESET='\e[0m'
 
-# Limpieza terminal
+# Limpiar pantalla
 clear
 
-# Instalacion de servidor nginx
-echo -e "Instalando servidor nginx"
-apt-get install nginx -y >/dev/null 2>/dev/null
-echo -e "Instalacion completada"
-clear
+# Título llamativo
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${BOLD}${CYAN}🚀 SCRIPT DE CONFIGURACIÓN AUTOMÁTICA 🚀${RESET}"
+echo -e "${BOLD}${CYAN}     🚀 AutoDeploy - By: Bily 🚀  ${RESET}"
+echo -e "${MAGENTA}======================================${RESET}"
+sleep 1
 
-echo -e "Escribe un nombre de Usuario"
-read -p " >" user
-
-if id "$user" &>> "$LOGS"; then
-    echo "El usuario $user ya existe. Por favor, elija otro nombre." >> "$LOGSERROR"
+# Instalación de Nginx con animación
+echo -e "\n${YELLOW}[⏳] Instalando Nginx...${RESET}"
+sleep 1
+if apt-get install nginx -y >/dev/null 2>/dev/null; then
+    echo -e "${GREEN}[✅] Nginx instalado correctamente.${RESET}"
+else
+    echo -e "${RED}[❌] Error al instalar Nginx.${RESET}" >&2
     exit 1
-        if [ $? -eq 0 ]; then
-        echo "Usuario '$user' creado con éxito."
-    else
-        echo "Error al crear el usuario '$user'."
-    fi
 fi
+sleep 1
+clear
 
-echo -e " Escribe una contraseña para el Usuario"
-read -s -p " >" password
+# Solicitud de usuario con resaltado
+echo -e "${MAGENTA}--------------------------------------${RESET}"
+echo -e "${BOLD}${CYAN}🔹 Escribe un nombre de usuario:${RESET}"
+read -p " > " user
+echo -e "${MAGENTA}--------------------------------------${RESET}"
 
-echo -e " Escribe nombre de empresa"
-read -p " >" empresa
-if grep -q "^$empresa:" /etc/group; then
-    echo "La empresa '$empresa' ya existe. Por favor, eliga otro nombre de empresa."
-    
-    # Solicita al usuario que ingrese un nuevo nombre de grupo
-    read -p "Nuevo nombre de empresa: " nueva_empresa
+LOGS="/var/log/$user/install.log"
+LOGSERROR="/var/log/$user/install.error.log"
+mkdir -p "$(dirname "$LOGS")"
 
-    # Repite el proceso hasta que se ingrese un nombre de grupo válido
-    while grep -q "^$nueva_empresa:" /etc/group; do
-        echo "El grupo '$nueva_empresa' ya existe. Por favor, elige otro nombre de empresa."
-        read -p "Nuevo nombre de empresa: " nueva_empresa
-    done
-
-    # Establece el nuevo nombre de grupo
-    empresa="$nueva_empresa"
-fi
-groupadd $empresa
-#Comprueba usuario
+# Verificación de usuario
 if id "$user" &>/dev/null; then
-    echo "El usuario '$user' ya existe. Por favor, elige otro nombre de usuario."
-else
-    # Crea el usuario con el grupo y el shell deseado
-    useradd -G "$empresa" -s /sbin/nologin "$user"
-
-    # Verifica si la creación del usuario fue exitosa
-    if [ $? -eq 0 ]; then
-        echo "Usuario '$user' creado con éxito."
-
-        # Establece la contraseña para el usuario
-        echo "$user:$password" | chpasswd
-
-        # Verifica si la configuración de la contraseña fue exitosa
-        if [ $? -eq 0 ]; then
-            echo "Contraseña configurada con éxito para el usuario '$user'."
-        else
-            echo "Error al configurar la contraseña para el usuario '$user'."
-        fi
-    else
-        echo "Error al crear el usuario '$user'."
-    fi
+    echo -e "${RED}[❌] El usuario '$user' ya existe. Elige otro nombre.${RESET}"
+    exit 1
 fi
-# Limpieza de chat
+
+# Solicitar contraseña
+echo -e "${BOLD}${CYAN}🔹 Escribe una contraseña para el usuario:${RESET}"
+read -s -p " > " password
+echo
+echo -e "${MAGENTA}--------------------------------------${RESET}"
+
+# Solicitar nombre de empresa
+echo -e "${BOLD}${CYAN}🔹 Escribe el nombre de la empresa:${RESET}"
+read -p " > " empresa
+
+# Verificar si el grupo ya existe
+while grep -q "^$empresa:" /etc/group; do
+    echo -e "${RED}[❌] La empresa '$empresa' ya existe.${RESET}"
+    read -p "Nuevo nombre de empresa: " empresa
+done
+
+groupadd "$empresa"
+
+# Creación del usuario con efecto de espera
+echo -e "${YELLOW}[⏳] Creando usuario...${RESET}"
+sleep 1
+useradd -G "$empresa" -s /sbin/nologin "$user" && \
+echo "$user:$password" | chpasswd && \
+echo -e "${GREEN}[✅] Usuario '$user' creado con éxito.${RESET}" || \
+echo -e "${RED}[❌] Error al crear el usuario.${RESET}" >&2
+sleep 1
+
+# Preguntas adicionales
 clear
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${BOLD}${CYAN}📋 CONFIGURACIÓN ADICIONAL 📋${RESET}"
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${BOLD}${CYAN}🔹 Escribe tu País (Iniciales 2):${RESET}"
+read -p " > " country
+echo -e "${BOLD}${CYAN}🔹 Marca tu Provincia:${RESET}"
+read -p " > " provincia
+echo -e "${BOLD}${CYAN}🔹 Marca tu Ciudad:${RESET}"
+read -p " > " city
+echo -e "${BOLD}${CYAN}🔹 Selecciona nombre de Dominio:${RESET}"
+read -p " > " domain
+echo -e "${BOLD}${CYAN}🔹 ¿Cuál es tu Correo Electrónico?:${RESET}"
+read -p " > " correo
 
-echo -e "Procesando..."
-
-
-mkdir -p /var/www/user/$empresa/html
-#Preguntas para instalacion personalizada
-
-echo -e " Escribe tu Pais (Iniciales 2)"
-read -p " >" country >>$LOGS 2>$LOGSERROR
-echo -e " Marca tu Provincia?"
-read -p " >" provincia >>$LOGS 2>$LOGSERROR
-echo -e " Marca tu ciudad?"
-read -p " >" city >>$LOGS 2>$LOGSERROR
-echo -e " Seleccione nombre de dominio"
-read -p " >" domain >>$LOGS 2>$LOGSERROR
-echo -e " Cual es tu correo electronico?"
-read -p " >" correo >>$LOGS 2>$LOGSERROR
-
+# Confirmación visual de los datos
 clear
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${BOLD}${CYAN}⚡ INFORMACIÓN INGRESADA ⚡${RESET}"
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${GREEN}🌍 País:${RESET} $country"
+echo -e "${GREEN}🏙  Provincia:${RESET} $provincia"
+echo -e "${GREEN}🏘  Ciudad:${RESET} $city"
+echo -e "${GREEN}🏢 Empresa:${RESET} $empresa"
+echo -e "${GREEN}🌐 Dominio:${RESET} $domain"
+echo -e "${GREEN}📧 Correo:${RESET} $correo"
+echo -e "${MAGENTA}======================================${RESET}"
 
-echo -e "Es esta informacion correcta?"
-echo -e " $country"
-echo -e " $provincia"
-echo -e " $city"
-echo -e " $empresa"
-echo -e " $domain"
-echo -e " $correo"
+read -e -p "${CYAN}¿Es correcta esta información? [y/N]${RESET} " response
+[[ "$response" =~ ^[Yy]$ ]] || exit
 
-read -e -p "Estas seguro? [y/N]" response
-case $response in
-    [Yy]|[Yy][Ee][Ss])
-    ;;
-    [Nn]|[Nn][Oo])
-        echo -e "Exiting"
-        exit
-    ;;
-esac
+# Creación de directorios
+mkdir -p /var/www/$empresa/html
+chown root:$empresa /var/www/$empresa
+chown :$empresa /var/www/$empresa/html
+chmod 755 /var/www/$empresa/
+chmod 775 /var/www/$empresa/html
 
+# Generación de certificado SSL con efecto de espera
+echo -e "${YELLOW}[⏳] Generando certificado SSL...${RESET}"
+mkdir -p /etc/ssl/private /etc/ssl/certs
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout "/etc/ssl/private/$empresa.key" \
+    -out "/etc/ssl/certs/$empresa.crt" \
+    -subj "/C=$country/ST=$provincia/L=$city/O=$empresa/OU=$empresa/CN=$domain/emailAddress=$correo"
 
-# Creacion del  usuario grupo y Jaula
-chown root:$empresa /var/www/user/$empresa
-chown :$empresa /var/www/user/$empresa/html
-chmod 755 /var/www/user/$empresa/
-chmod 775 /var/www/user/$empresa/html
+echo -e "${GREEN}[✅] Certificado SSL generado con éxito.${RESET}"
+sleep 1
 
-echo -e "
-Match Group $empresa
-    ChrootDirectory /var/www/user/$empresa
-    X11Forwarding no
-    AllowTCPForwarding no
-    ForceCommand internal-sftp
-" >> /etc/ssh/sshd_config
-
-# Genera Certificado SSL autofirmado
-# Crear un archivo de configuración de solicitud (CSR) basado en las variables
-cat <<EOF > solicitud.conf
-[ req ]
-default_bits       = 2048
-prompt             = no
-default_md         = sha256
-distinguished_name = dn
-
-[ dn ]
-C = $country
-ST = $provincia
-L = $city
-O = $empresa
-OU = $empresa
-CN = $domain
-emailAddress = $correo
-EOF
-
-# Ejecutar el comando OpenSSL con el archivo de configuración
- openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "/etc/ssl/private/$empresa.key" -out "/etc/ssl/certs/$empresa.crt" -config solicitud.conf
-
-# Verificar si la generación del certificado fue exitosa
-if [ $? -eq 0 ]; then
-    echo "Certificado generado con éxito."
-else
-    echo "Error al generar el certificado."
-fi
-#Creando archivo de configuracion de servidor web
-echo -e "server {
-        listen 80;
-        listen [::]:80;
-        root /var/www/user/$empresa/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name $domain;
-        return 302 https://$server_name$request_uri;
-        location / {
-                try_files $uri $uri/ =404;
-        }
-}
-
-server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
-        ssl_certificate /etc/ssl/certs/$empresa.crt;
-        ssl_certificate_key /etc/ssl/private/$empresa.key;
-        server_name $domain;
-        root /var/www/user/$empresa/html;
-        index index.html index.htm index.nginx-debian.html;
-}
-" >> /etc/nginx/sites-available/$empresa.conf
-
-# Ruta simbolica a sites-enabled
-ln -s /etc/nginx/sites-available/$empresa.conf /etc/nginx/sites-enabled
-
-# Creacion contenido index.html en $domain/html
-echo -e "<html>
-    <head>
-        <title>Bienvenido a $domain</title>
-    </head>
-    <body>
-        <h1>Parece que todo anda correcto!</h1>
-        <h1> Este dominio pertenece a $domain </h1>
-    </body>
-</html>
-
-" >> /var/www/user/$empresa/html/index.html
-chown :$empresa /var/www/user/$empresa/html/index.html
-chmod -R 775 /var/www/user/$empresa/html/index.html
+# Reinicio de servicios con efecto visual
+echo -e "${YELLOW}[⏳] Reiniciando servicios...${RESET}"
 systemctl restart nginx.service
 systemctl restart ssh
+echo -e "${GREEN}[✅] Servicios reiniciados correctamente.${RESET}"
+
+# Mensaje final con efecto visual
+clear
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${BOLD}${CYAN}🎉 INSTALACIÓN COMPLETA 🎉${RESET}"
+echo -e "${MAGENTA}======================================${RESET}"
+echo -e "${GREEN}🚀 Tu servidor está listo y funcionando.${RESET}"
+echo -e "${CYAN}🔗 Accede a: https://$domain${RESET}"
+echo -e "${YELLOW}⚠ Recuerda configurar tu DNS correctamente.${RESET}"
+echo -e "${GREEN}🎉 ¡Disfruta de tu nuevo servidor! 🎉${RESET}"
+echo -e "${MAGENTA}======================================${RESET}"
