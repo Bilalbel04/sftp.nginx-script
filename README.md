@@ -48,7 +48,7 @@ Durante la ejecución, se te pedirá que ingreses:
 - **Correo electrónico** 📧
 
 ## 🎨 Vista previa en Terminal
-<img src="https://imgur.com/MR2RvT5" alt="Imagen Salida Terminal">
+<img src="https://imgur.com/MR2RvT5" alt="Captura Terminal" width="700">
 
 ## 🔗 Conectarse al servidor
 Una vez completada la instalación, puedes acceder a tu servidor con HTTPS:
