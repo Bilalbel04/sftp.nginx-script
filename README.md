@@ -1,39 +1,67 @@
-Este es un script echo en bash para un proyecto llamado DarkHosting. Automatiza los siguientes procesos:
+# 🚀 Script de Configuración Automática
 
--   ( Update* ) Instalacion o/y actualizacion servicio nginx
--   ( Update* ) Instalacion o/y actualizacion servicio OpenSSH Server
--   Automatizacion creacion de vhosts ( Dominios personalizados )
--   Automatizacion SSL autofirmado por cada dominio
--   Automatizacion jaula dentro la ruta html de tu sitio web
--   Automatizacion creacion de usuarios y contraseñas para cada cliente
--   Denegacion conectividad por SSH
--   Permite acceso SFTP.
+Este script en **Bash** automatiza la instalación de **Nginx**, la creación de un usuario y un grupo, la generación de un certificado SSL autofirmado y la configuración de un servidor web seguro.
 
-Como usarlo paso por paso
+## 📌 Características
+- Instalación automática de **Nginx** 🖥️
+- Creación de usuario y grupo con restricciones 🔒
+- Configuración de **Chroot SFTP** para seguridad extra 🛡️
+- Generación de certificado **SSL autofirmado** 🔑
+- Creación de configuración para **Nginx** con HTTPS 🌍
+- Mensajes coloridos en la terminal para una mejor experiencia 🖌️
 
-Paso 0:
--   Actualizaremos los paquetes del sistema
+## 📦 Requisitos
+- **Sistema operativo:** Ubuntu/Debian
+- **Permisos:** Debe ejecutarse como `root`
 
-           apt-get update && apt-get upgrade
+## 📜 Uso
+```bash
+### 1️⃣ Actualizacion del sistema
+sudo apt update -y && sudo apt upgrade -y
+```
 
-Paso 1:
--   Ahora debemos clonar el repositorio
+### 2️⃣ Clonar el Repositorio
+```bash
+git clone git@github.com:Bilalbel04/sftp.nginx-script.git
+cd sftp.nginx-script
+```
 
-        git clone https://github.com/Bilalbel04/sftp.nginx-script.git
+### 3️⃣ Dar Permisos de Ejecución
+```bash
+chmod +x autodeploy_web.sh
+```
 
-Paso 2:
--   Entramos a la carpeta sftp.nfinx-script 
+### 4️⃣ Ejecutar el Script
+```bash
+./autodeploy_web.sh
+```
 
-        cd sftp.nginx-script
+---
 
-Paso 3:
--   Damos permisos de ejecucion al script 
+## 🛠️ Configuración
+Durante la ejecución, se te pedirá que ingreses:
+- **Usuario** 👤
+- **Contraseña** 🔑
+- **Nombre de la empresa** 🏢
+- **Ubicación geográfica** 🌍
+- **Nombre de dominio** 🌐
+- **Correo electrónico** 📧
 
-        chmod 755 darkhostingscr.sh
+## 🎨 Vista previa en Terminal
+<img src="https://imgur.com/MR2RvT5" alt="Imagen Salida Terminal">
 
-Paso 4:
--   Ejecutamos el script 
+## 🔗 Conectarse al servidor
+Una vez completada la instalación, puedes acceder a tu servidor con HTTPS:
+```bash
+https://tu-dominio.com
+```
 
-        bash darkhostingscr.sh
+## 🔥 Autor
 
+Creado por Bily ⚡
+
+Si te gusta este proyecto, ¡dale una ⭐ en GitHub y sígueme para más herramientas útiles!
+
+## 📄 Licencia
+Este proyecto está bajo la licencia MIT. ¡Siéntete libre de usarlo y modificarlo a tu gusto! 😃
 
